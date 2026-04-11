@@ -101,8 +101,8 @@ export default function AdminPage() {
       {/* Nav */}
       <nav className="border-b border-slate-800 px-6 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-emerald-500 rounded-md flex items-center justify-center font-black text-slate-950 text-xs">LS</div>
-          <span className="font-bold text-white">LienScope</span>
+          <div className="w-7 h-7 bg-emerald-500 rounded-md flex items-center justify-center font-black text-slate-950 text-xs">F</div>
+          <span className="font-bold text-white">Forclos</span>
           <span className="text-slate-600 mx-2">/</span>
           <span className="text-slate-400 text-sm">Scraper Admin</span>
         </Link>

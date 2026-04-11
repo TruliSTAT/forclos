@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "npx tsx scripts/seed-scrapers.ts",
+    "seed:funding": "npx tsx scripts/seed-funding.ts",
+    "send:alerts": "npx tsx scripts/send-alerts.ts",
     "db:push": "npx prisma db push",
     "db:generate": "npx prisma generate",
     "db:studio": "npx prisma studio",

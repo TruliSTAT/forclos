@@ -70,8 +70,12 @@ export function NavBar() {
         {/* Extra nav links */}
         <div className="hidden md:flex items-center gap-3 text-sm text-slate-500">
           <Link href="/funding" className="hover:text-white transition-colors">🏦 Funding</Link>
+          <Link href="/investors" className="hover:text-white transition-colors">👥 Investors</Link>
+          {user && (
+            <Link href="/dashboard" className="hover:text-emerald-400 transition-colors text-slate-400">📊 Dashboard</Link>
+          )}
           {user?.tier === 'elite' && (
-            <Link href="/portfolio" className="hover:text-amber-400 transition-colors text-amber-500/70">📊 Portfolio</Link>
+            <Link href="/portfolio" className="hover:text-amber-400 transition-colors text-amber-500/70">💼 Portfolio</Link>
           )}
         </div>
 
@@ -89,6 +93,9 @@ export function NavBar() {
             </button>
             {menuOpen && (
               <div className="absolute right-0 top-10 w-52 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl py-1 z-50">
+                <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white">
+                  <BarChart2 size={14} /> Dashboard
+                </Link>
                 <Link href="/pricing" className="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white">
                   <Star size={14} /> Upgrade Plan
                 </Link>

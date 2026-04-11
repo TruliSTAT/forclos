@@ -355,7 +355,7 @@ export async function GET(req: Request) {
     return new Response(csv, {
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="lienscope-export.csv"',
+        'Content-Disposition': 'attachment; filename="forclos-export.csv"',
       },
     })
   }

@@ -153,7 +153,7 @@ export default function PricingPage() {
         <div className="mt-8 bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center">
           <h3 className="text-white font-semibold mb-2">Marketplace Transaction Fee</h3>
           <p className="text-slate-400 text-sm max-w-lg mx-auto">
-            Elite members can list properties for <strong className="text-white">free</strong>. LienScope charges a{' '}
+            Elite members can list properties for <strong className="text-white">free</strong>. Forclos charges a{' '}
             <strong className="text-amber-400">2.5% transaction fee</strong> only when a deal closes.
             No upfront costs, no monthly listing fees.
           </p>

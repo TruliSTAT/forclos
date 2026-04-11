@@ -16,7 +16,7 @@ const features = [
   { icon: Shield,     title: 'Verified Daily Data',     desc: 'Scraped every 24h from 500+ county portals, RealAuction, GovEase, Bid4Assets, SRI, and more.' },
   { icon: Clock,      title: 'Saved Searches + Alerts', desc: 'Save your filters and get emailed the moment matching properties hit the database.' },
   { icon: Crown,      title: 'Investor Marketplace',    desc: 'Buy and sell tax deeds, liens, and REO from other investors. Your deal exit ramp.' },
-  { icon: Zap,        title: 'API Access (Elite)',       desc: 'Programmatic access to the full database. Build your own tools on top of LienScope.' },
+  { icon: Zap,        title: 'API Access (Elite)',       desc: 'Programmatic access to the full database. Build your own tools on top of Forclos.' },
 ]
 
 const tabs = [
@@ -124,8 +124,8 @@ export default function LandingPage() {
       <footer className="border-t border-slate-800 px-6 py-8">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-emerald-500 rounded-md flex items-center justify-center font-black text-slate-950 text-xs">LS</div>
-            <span className="font-bold text-white">LienScope</span>
+            <div className="w-7 h-7 bg-emerald-500 rounded-md flex items-center justify-center font-black text-slate-950 text-xs">F</div>
+            <span className="font-bold text-white">Forclos</span>
             <span className="text-slate-600 text-xs ml-2">© 2026</span>
           </div>
           <div className="flex items-center gap-6 text-sm text-slate-500">

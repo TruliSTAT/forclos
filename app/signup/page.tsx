@@ -30,8 +30,8 @@ export default function SignupPage() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center font-black text-slate-950">LS</div>
-          <span className="font-bold text-white text-xl">LienScope</span>
+          <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center font-black text-slate-950">F</div>
+          <span className="font-bold text-white text-xl">Forclos</span>
         </Link>
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
           <h1 className="text-white font-bold text-2xl mb-1 text-center">Start for free</h1>

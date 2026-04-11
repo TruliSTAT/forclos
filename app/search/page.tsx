@@ -517,10 +517,17 @@ function SearchContent() {
                       {/* Status */}
                       <StatusBadge status={l.status} />
 
-                      {/* Deal analyzer hint */}
-                      <div className={`hidden xl:flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition-colors ${limits.dealAnalyzer ? 'text-slate-600 group-hover:text-emerald-400 group-hover:bg-emerald-500/10' : 'text-slate-700'}`}>
-                        {!limits.dealAnalyzer && <Lock size={10} />}
-                        <TrendingUp size={12} />
+                      {/* Deal analyzer hint + detail link */}
+                      <div className="hidden xl:flex items-center gap-1">
+                        <div className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition-colors ${limits.dealAnalyzer ? 'text-slate-600 group-hover:text-emerald-400 group-hover:bg-emerald-500/10' : 'text-slate-700'}`}>
+                          {!limits.dealAnalyzer && <Lock size={10} />}
+                          <TrendingUp size={12} />
+                        </div>
+                        <Link href={`/listings/${l.id}?type=${l.type}`}
+                          onClick={e => e.stopPropagation()}
+                          className="text-xs text-slate-600 hover:text-emerald-400 px-2 py-1 rounded-lg hover:bg-emerald-500/10 transition-colors whitespace-nowrap">
+                          Details →
+                        </Link>
                       </div>
                     </div>
                   )
