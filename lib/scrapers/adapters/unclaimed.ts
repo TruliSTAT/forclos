@@ -19,6 +19,11 @@ interface UnclaimedRecord {
 }
 
 export class UnclaimedPropertyScraper extends BaseScraper {
+  async scrape() {
+    await this.run()
+    return { success: true, count: 0 }
+  }
+
   async run() {
     const stateHandlers: Record<string, () => Promise<UnclaimedRecord[]>> = {
       FL: () => this.scrapeFloridaUnclaimed(),
