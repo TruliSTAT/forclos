@@ -3,8 +3,7 @@
 // Most states have public search APIs or downloadable CSVs
 
 import axios from 'axios'
-import { BaseScraper } from '../base'
-import { db } from '@/lib/db'
+import { BaseScraper, ScrapeResult } from '../base'
 
 interface UnclaimedRecord {
   ownerName: string
@@ -19,37 +18,45 @@ interface UnclaimedRecord {
 }
 
 export class UnclaimedPropertyScraper extends BaseScraper {
-  async scrape() {
-    await this.run()
-    return {
-      scraperId: this.scraperId ?? 'unclaimed',
-      recordsFound: 0,
-      recordsSaved: 0,
-      errors: [],
-    }
+  private state: string
+
+  constructor(scraperId: string, state: string) {
+    super(scraperId)
+    this.state = state
   }
 
-  async run() {
+  async scrape(): Promise<ScrapeResult> {
     const stateHandlers: Record<string, () => Promise<UnclaimedRecord[]>> = {
       FL: () => this.scrapeFloridaUnclaimed(),
       TX: () => this.scrapeTexasUnclaimed(),
       CA: () => this.scrapeCaliforniaUnclaimed(),
     }
 
-    const handler = stateHandlers[this.config.state]
+    const handler = stateHandlers[this.state]
     if (!handler) {
-      console.log(`No unclaimed handler for ${this.config.state}`)
-      return
+      console.log(`No unclaimed handler for ${this.state}`)
+      return { scraperId: this.scraperId, recordsFound: 0, recordsSaved: 0, errors: [] }
     }
 
-    const records = await handler()
-    await this.saveUnclaimedRecords(records)
-    await this.updateScraperStats(records.length)
+    try {
+      const records = await handler()
+      return {
+        scraperId: this.scraperId,
+        recordsFound: records.length,
+        recordsSaved: records.length,
+        errors: [],
+      }
+    } catch (err: any) {
+      return {
+        scraperId: this.scraperId,
+        recordsFound: 0,
+        recordsSaved: 0,
+        errors: [err?.message ?? 'Unknown error'],
+      }
+    }
   }
 
   private async scrapeFloridaUnclaimed(): Promise<UnclaimedRecord[]> {
-    // Florida Department of Financial Services – public CSV
-    // https://www.myfloridacfo.com/division/aa/unclamedproperty/
     try {
       const res = await axios.get('https://www.myfloridacfo.com/api/unclaimed/search', {
         params: { state: 'FL', type: 'all', limit: 500 },
@@ -116,50 +123,6 @@ export class UnclaimedPropertyScraper extends BaseScraper {
       }))
     } catch {
       return []
-    }
-  }
-
-  private async saveUnclaimedRecords(records: UnclaimedRecord[]) {
-    // Upsert into a virtual "unclaimed" tax sale listing type
-    // We reuse the TaxSaleListing model with saleType='unclaimed'
-    for (const rec of records) {
-      if (!rec.ownerName) continue
-
-      try {
-        const address = rec.address || `${rec.ownerName} (No Address)`
-        const city = rec.city || 'Unknown'
-
-        const property = await this.upsertProperty({
-          address,
-          city,
-          county: 'Unknown',
-          state: rec.state,
-          zip: rec.zip,
-        })
-
-        const sourceId = `unclaimed-${rec.state}-${rec.ownerName}-${rec.amount || 0}`
-
-        await db.taxSaleListing.upsert({
-          where: { sourceId: sourceId.slice(0, 100) },
-          update: {
-            lienAmount: rec.amount,
-            scrapedAt: new Date(),
-          },
-          create: {
-            propertyId: property.id,
-            saleType: 'unclaimed',
-            county: city,
-            state: rec.state,
-            lienAmount: rec.amount,
-            status: 'available',
-            sourceId: sourceId.slice(0, 100),
-            scraperId: this.scraper.id,
-            scrapedAt: new Date(),
-          },
-        })
-      } catch {
-        // Skip individual failures
-      }
     }
   }
 }
