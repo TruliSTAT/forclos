@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Search, TrendingUp, Shield, Clock, Crown, Zap, ArrowRight } from 'lucide-react'
 import { NavBar } from '@/components/NavBar'
+import { TrinityHomepageSection } from '@/components/Trinity'
 
 const stats = [
   { label: 'Active Listings',   value: '47,392',  change: '+1,204 today' },
@@ -11,7 +12,7 @@ const stats = [
 
 const features = [
   { icon: Search,     title: '30+ Investor Filters',   desc: 'Equity %, ROI, lien rate, redemption period, auction platform — every filter serious investors need.' },
-  { icon: TrendingUp, title: 'Deal Analyzer',           desc: 'Enter your repair estimate and instantly see profit, ROI, and cash-on-cash return.' },
+  { icon: TrendingUp, title: 'AI Deal Score (1u201390100)',   desc: 'Every listing scored on equity, delinquency, location, timing, and property type. One number. One click.' },
   { icon: Shield,     title: 'Verified Daily Data',     desc: 'Scraped every 24h from 500+ county portals, RealAuction, GovEase, Bid4Assets, SRI, and more.' },
   { icon: Clock,      title: 'Saved Searches + Alerts', desc: 'Save your filters and get emailed the moment matching properties hit the database.' },
   { icon: Crown,      title: 'Investor Marketplace',    desc: 'Buy and sell tax deeds, liens, and REO from other investors. Your deal exit ramp.' },
@@ -82,6 +83,9 @@ export default function LandingPage() {
           ))}
         </div>
       </div>
+
+      {/* Trinity section */}
+      <TrinityHomepageSection />
 
       {/* Features */}
       <div className="max-w-5xl mx-auto px-6 py-16 border-t border-slate-800">
