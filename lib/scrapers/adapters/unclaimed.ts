@@ -21,7 +21,12 @@ interface UnclaimedRecord {
 export class UnclaimedPropertyScraper extends BaseScraper {
   async scrape() {
     await this.run()
-    return { success: true, count: 0 }
+    return {
+      scraperId: this.scraperId ?? 'unclaimed',
+      recordsFound: 0,
+      recordsSaved: 0,
+      errors: [],
+    }
   }
 
   async run() {
