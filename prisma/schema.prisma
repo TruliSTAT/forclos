@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Property {
+  id           String   @id @default(cuid())
+  address      String
+  city         String
+  county       String
+  state        String
+  zip          String?
+  parcelId     String?
+  propertyType String?
+  lat          Float?
+  lng          Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  foreclosureListings ForeclosureListing[]
+  taxSaleListings     TaxSaleListing[]
+
+  @@index([state, county])
+  @@index([parcelId])
+}
+
+model ForeclosureListing {
+  id            String    @id @default(cuid())
+  propertyId    String
+  property      Property  @relation(fields: [propertyId], references: [id])
+  caseNumber    String?
+  auctionDate   DateTime?
+  openingBid    Float?
+  assessedValue Float?
+  status        String    @default("scheduled")
+  lender        String?
+  attorney      String?
+  plaintiff     String?
+  sourceUrl     String?
+  sourceId      String?
+  scraperId     String?
+  scrapedAt     DateTime  @default(now())
+
+  @@index([status])
+  @@index([auctionDate])
+  @@index([scraperId])
+}
+
+model TaxSaleListing {
+  id                String    @id @default(cuid())
+  propertyId        String
+  property          Property  @relation(fields: [propertyId], references: [id])
+  saleType          String
+  certificateNumber String?
+  yearOfTax         Int?
+  lienAmount        Float?
+  interestRate      Float?
+  saleDate          DateTime?
+  assessedValue     Float?
+  status            String    @default("available")
+  county            String
+  state             String
+  sourceUrl         String?
+  sourceId          String?
+  scraperId         String?
+  scrapedAt         DateTime  @default(now())
+
+  @@index([status])
+  @@index([saleDate])
+  @@index([state])
+  @@index([saleType])
+  @@index([scraperId])
+}
+
+model Scraper {
+  id            String    @id @default(cuid())
+  name          String
+  state         String
+  county        String?
+  listingType   String
+  platform      String?
+  sourceUrl     String?
+  isActive      Boolean   @default(true)
+  schedule      String    @default("daily")
+  lastRunAt     DateTime?
+  lastRunStatus String?
+  lastRunCount  Int?
+  totalRecords  Int       @default(0)
+  config        Json?
+  createdAt     DateTime  @default(now())
+
+  jobs ScraperJob[]
+
+  @@index([state])
+  @@index([isActive])
+}
+
+model ScraperJob {
+  id           String    @id @default(cuid())
+  scraperId    String
+  scraper      Scraper   @relation(fields: [scraperId], references: [id], onDelete: Cascade)
+  startedAt    DateTime  @default(now())
+  completedAt  DateTime?
+  status       String    @default("running")
+  recordsFound Int?
+  errors       String?
+}

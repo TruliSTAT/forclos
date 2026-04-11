@@ -1,0 +1,50 @@
+{
+  "name": "foreclosure-scraper",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "seed": "npx tsx scripts/seed-scrapers.ts",
+    "db:push": "npx prisma db push",
+    "db:generate": "npx prisma generate",
+    "db:studio": "npx prisma studio"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "@types/pg": "^8.20.0",
+    "axios": "^1.15.0",
+    "bullmq": "^5.73.4",
+    "cheerio": "^1.2.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.38.0",
+    "ioredis": "^5.10.1",
+    "lucide-react": "^1.8.0",
+    "next": "14.2.0",
+    "pg": "^8.20.0",
+    "playwright": "^1.59.1",
+    "prisma": "^7.7.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hook-form": "^7.72.1",
+    "recharts": "^3.8.1",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
