@@ -4,7 +4,66 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
+// ─── AUTH ──────────────────────────────────────────────────────────────────
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  passwordHash     String?
+  name             String?
+  tier             String    @default("free") // free | pro | elite
+  stripeCustomerId String?   @unique
+  stripeSubId      String?   @unique
+  subStatus        String?
+  subPeriodEnd     DateTime?
+  searchCount      Int       @default(0)
+  searchResetAt    DateTime  @default(now())
+  detailCount      Int       @default(0)
+  detailResetAt    DateTime  @default(now())
+  emailVerified    Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  savedSearches        SavedSearch[]
+  sessions             Session[]
+  marketplaceListings  MarketplaceListing[]
+  offers               MarketplaceOffer[]   @relation("BuyerOffers")
+  messages             MarketplaceMessage[]
+  portfolio            PortfolioProperty[]
+  investorProfile      InvestorProfile?
+  fundingLeads         FundingLead[]
+
+  @@index([email])
+  @@index([stripeCustomerId])
+  @@index([tier])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([userId])
+}
+
+model Lead {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  source      String?
+  convertedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([email])
+}
+
+// ─── PROPERTIES ────────────────────────────────────────────────────────────
 
 model Property {
   id           String   @id @default(cuid())
@@ -15,6 +74,13 @@ model Property {
   zip          String?
   parcelId     String?
   propertyType String?
+  bedrooms     Int?
+  bathrooms    Float?
+  sqft         Int?
+  lotSizeAcres Float?
+  yearBuilt    Int?
+  garage       Boolean?
+  pool         Boolean?
   lat          Float?
   lng          Float?
   createdAt    DateTime @default(now())
@@ -25,54 +91,84 @@ model Property {
 
   @@index([state, county])
   @@index([parcelId])
+  @@index([state, city])
+  @@index([zip])
 }
 
 model ForeclosureListing {
-  id            String    @id @default(cuid())
-  propertyId    String
-  property      Property  @relation(fields: [propertyId], references: [id])
-  caseNumber    String?
-  auctionDate   DateTime?
-  openingBid    Float?
-  assessedValue Float?
-  status        String    @default("scheduled")
-  lender        String?
-  attorney      String?
-  plaintiff     String?
-  sourceUrl     String?
-  sourceId      String?
-  scraperId     String?
-  scrapedAt     DateTime  @default(now())
+  id                 String    @id @default(cuid())
+  propertyId         String
+  property           Property  @relation(fields: [propertyId], references: [id])
+  caseNumber         String?
+  auctionDate        DateTime?
+  openingBid         Float?
+  assessedValue      Float?
+  estimatedValue     Float?
+  equityPct          Float?
+  status             String    @default("scheduled")
+  foreclosureType    String?
+  defaultAmount      Float?
+  originalLoanAmount Float?
+  lender             String?
+  attorney           String?
+  plaintiff          String?
+  auctionType        String?
+  auctionPlatform    String?
+  minBidIncrement    Float?
+  filingDate         DateTime?
+  daysSinceFiling    Int?
+  sourceUrl          String?
+  sourceId           String?
+  scraperId          String?
+  scrapedAt          DateTime  @default(now())
 
   @@index([status])
   @@index([auctionDate])
   @@index([scraperId])
+  @@index([openingBid])
+  @@index([equityPct])
+  @@index([lender])
+  @@index([auctionPlatform])
 }
 
 model TaxSaleListing {
-  id                String    @id @default(cuid())
-  propertyId        String
-  property          Property  @relation(fields: [propertyId], references: [id])
-  saleType          String
-  certificateNumber String?
-  yearOfTax         Int?
-  lienAmount        Float?
-  interestRate      Float?
-  saleDate          DateTime?
-  assessedValue     Float?
-  status            String    @default("available")
-  county            String
-  state             String
-  sourceUrl         String?
-  sourceId          String?
-  scraperId         String?
-  scrapedAt         DateTime  @default(now())
+  id                     String    @id @default(cuid())
+  propertyId             String
+  property               Property  @relation(fields: [propertyId], references: [id])
+  saleType               String
+  certificateNumber      String?
+  yearOfTax              Int?
+  lienAmount             Float?
+  taxDelinquencyAmount   Float?
+  yearsDelinquent        Int?
+  interestRate           Float?
+  certificateRate        Float?
+  stateInterestRate      Float?
+  penaltyRate            Float?
+  redemptionPeriodMonths Int?
+  overbidAllowed         Boolean?
+  subsequentTaxesAllowed Boolean?
+  saleDate               DateTime?
+  assessedValue          Float?
+  estimatedValue         Float?
+  estimatedRoi           Float?
+  status                 String    @default("available")
+  county                 String
+  state                  String
+  auctionType            String?
+  auctionPlatform        String?
+  sourceUrl              String?
+  sourceId               String?
+  scraperId              String?
+  scrapedAt              DateTime  @default(now())
 
   @@index([status])
   @@index([saleDate])
   @@index([state])
   @@index([saleType])
   @@index([scraperId])
+  @@index([interestRate])
+  @@index([lienAmount])
 }
 
 model Scraper {
@@ -107,4 +203,205 @@ model ScraperJob {
   status       String    @default("running")
   recordsFound Int?
   errors       String?
+}
+
+model SavedSearch {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  filters   Json
+  alertsOn  Boolean  @default(false)
+  tab       String   @default("foreclosure")
+  lastAlert DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ─── MARKETPLACE ───────────────────────────────────────────────────────────
+
+model MarketplaceListing {
+  id                String   @id @default(cuid())
+  sellerId          String
+  seller            User     @relation(fields: [sellerId], references: [id])
+
+  // Property info
+  address           String
+  city              String
+  county            String
+  state             String
+  zip               String?
+  propertyType      String?
+  bedrooms          Int?
+  bathrooms         Float?
+  sqft              Int?
+  yearBuilt         Int?
+  lotSizeAcres      Float?
+  lat               Float?
+  lng               Float?
+
+  // Deal info
+  listingType       String   // tax-deed | tax-lien | reo | foreclosure | mechanic-lien | judgment-lien
+  purchasePricePaid Float?
+  askingPrice       Float
+  estimatedValue    Float?
+  estimatedRoi      Float?
+  equityPct         Float?
+
+  // Docs & media
+  photos            String[] // URLs
+  documents         String[] // URLs
+  description       String?
+  reasonForSelling  String?
+  daysOnMarket      Int      @default(0)
+
+  // Status
+  status            String   @default("pending") // pending | active | under_contract | sold | withdrawn
+  approvedAt        DateTime?
+  approvedBy        String?
+
+  // Transaction tracking
+  closedAt          DateTime?
+  closedPrice       Float?
+  txFeeAmount       Float?    // 2.5% of closedPrice
+  txFeePaid         Boolean   @default(false)
+  txFeeStripeId     String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  offers   MarketplaceOffer[]
+  messages MarketplaceMessage[]
+
+  @@index([status])
+  @@index([state])
+  @@index([listingType])
+  @@index([askingPrice])
+  @@index([sellerId])
+}
+
+model MarketplaceOffer {
+  id          String             @id @default(cuid())
+  listingId   String
+  listing     MarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  buyerId     String
+  buyer       User               @relation("BuyerOffers", fields: [buyerId], references: [id])
+
+  offerAmount Float
+  message     String?
+  status      String             @default("pending") // pending | accepted | rejected | withdrawn
+  respondedAt DateTime?
+  createdAt   DateTime           @default(now())
+
+  @@index([listingId])
+  @@index([buyerId])
+  @@index([status])
+}
+
+model MarketplaceMessage {
+  id          String             @id @default(cuid())
+  listingId   String
+  listing     MarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  senderId    String
+  sender      User               @relation(fields: [senderId], references: [id])
+  body        String
+  createdAt   DateTime           @default(now())
+
+  @@index([listingId])
+  @@index([senderId])
+}
+
+// ─── PORTFOLIO ─────────────────────────────────────────────────────────────
+
+model PortfolioProperty {
+  id                     String    @id @default(cuid())
+  userId                 String
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address                String
+  city                   String
+  state                  String
+  county                 String?
+  zip                    String?
+  propertyType           String?
+  purchaseDate           DateTime?
+  purchasePrice          Float
+  listingType            String    // tax-lien | tax-deed | foreclosure | reo
+  certNumber             String?
+  interestRate           Float?
+  redemptionPeriodMonths Int?
+  purchaseDeadline       DateTime?
+  deadlineAlertSent30    Boolean   @default(false)
+  deadlineAlertSent7     Boolean   @default(false)
+  deadlineAlertSent1     Boolean   @default(false)
+  currentValue           Float?
+  rentIncome             Float?
+  expenses               Float?
+  notes                  String?
+  status                 String    @default("active")
+  soldPrice              Float?
+  soldDate               DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([purchaseDeadline])
+}
+
+// ─── INVESTOR PROFILES ─────────────────────────────────────────────────────
+
+model InvestorProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName   String?
+  bio           String?
+  location      String?
+  website       String?
+  strategies    String[]
+  states        String[]
+  dealsCount    Int      @default(0)
+  totalInvested Float    @default(0)
+  isPublic      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isPublic])
+}
+
+// ─── FUNDING ───────────────────────────────────────────────────────────────
+
+model FundingPartner {
+  id          String   @id @default(cuid())
+  name        String
+  logo        String?
+  types       String[]
+  minLoan     Float?
+  maxLoan     Float?
+  rateFrom    Float?
+  rateTo      Float?
+  states      String[]
+  applyUrl    String?
+  description String?
+  isActive    Boolean  @default(true)
+  leadsCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  leads FundingLead[]
+}
+
+model FundingLead {
+  id           String         @id @default(cuid())
+  userId       String
+  user         User           @relation(fields: [userId], references: [id])
+  partnerId    String
+  partner      FundingPartner @relation(fields: [partnerId], references: [id])
+  propertyInfo String?
+  loanAmount   Float?
+  createdAt    DateTime       @default(now())
+
+  @@index([userId])
+  @@index([partnerId])
 }

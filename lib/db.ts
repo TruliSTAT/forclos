@@ -1,15 +1,11 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
-import pg from 'pg'
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
 function createPrismaClient() {
-  const pool = new pg.Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/lienscope',
+  return new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error'] : ['error'],
   })
-  const adapter = new PrismaPg(pool)
-  return new PrismaClient({ adapter } as any)
 }
 
 export const db = globalForPrisma.prisma || createPrismaClient()

@@ -1,97 +1,136 @@
 import Link from 'next/link'
-import { Search, Map, Database, TrendingUp, Shield, Clock } from 'lucide-react'
+import { Search, TrendingUp, Shield, Clock, Crown, Zap, ArrowRight } from 'lucide-react'
+import { NavBar } from '@/components/NavBar'
 
 const stats = [
-  { label: 'Active Listings', value: '47,392', change: '+1,204 today' },
-  { label: 'Counties Covered', value: '1,847', change: 'Across 50 states' },
-  { label: 'Tax Liens', value: '28,103', change: 'Available now' },
-  { label: 'Foreclosures', value: '19,289', change: 'Scheduled auctions' },
+  { label: 'Active Listings',   value: '47,392',  change: '+1,204 today' },
+  { label: 'Counties Covered',  value: '1,847',   change: 'Across 50 states' },
+  { label: 'Tax Liens',         value: '28,103',  change: 'Available now' },
+  { label: 'Foreclosures',      value: '19,289',  change: 'Scheduled auctions' },
 ]
 
 const features = [
-  { icon: Search, title: 'Full-Text Search', desc: 'Search by address, parcel ID, county, or state across all listing types.' },
-  { icon: Map, title: 'Interactive Map', desc: 'Visualize listings geographically. Find clusters by county and filter on the fly.' },
-  { icon: Database, title: '500+ Sources', desc: 'Scraped daily from RealAuction, GovEase, Bid4Assets, SRI, and county portals.' },
-  { icon: TrendingUp, title: 'Market Insights', desc: 'Track bid trends, average opening bids, and ROI data by county.' },
-  { icon: Shield, title: 'Verified Data', desc: 'Cross-referenced with county assessor records. Duplicate detection built in.' },
-  { icon: Clock, title: 'Real-Time Alerts', desc: 'Email alerts when new listings match your saved search criteria.' },
+  { icon: Search,     title: '30+ Investor Filters',   desc: 'Equity %, ROI, lien rate, redemption period, auction platform — every filter serious investors need.' },
+  { icon: TrendingUp, title: 'Deal Analyzer',           desc: 'Enter your repair estimate and instantly see profit, ROI, and cash-on-cash return.' },
+  { icon: Shield,     title: 'Verified Daily Data',     desc: 'Scraped every 24h from 500+ county portals, RealAuction, GovEase, Bid4Assets, SRI, and more.' },
+  { icon: Clock,      title: 'Saved Searches + Alerts', desc: 'Save your filters and get emailed the moment matching properties hit the database.' },
+  { icon: Crown,      title: 'Investor Marketplace',    desc: 'Buy and sell tax deeds, liens, and REO from other investors. Your deal exit ramp.' },
+  { icon: Zap,        title: 'API Access (Elite)',       desc: 'Programmatic access to the full database. Build your own tools on top of LienScope.' },
+]
+
+const tabs = [
+  { href: '/search?tab=foreclosure', emoji: '🏚️', label: 'Foreclosures',  desc: 'Sheriff sales, judicial & non-judicial, bank REO' },
+  { href: '/search?tab=tax-lien',    emoji: '🏷️', label: 'Tax Liens',     desc: 'Certificates, interest rates, redemption windows' },
+  { href: '/search?tab=deed-lien',   emoji: '📋', label: 'Deeds & Liens', desc: 'Tax deeds, mechanic liens, judgment liens' },
+  { href: '/marketplace',            emoji: '🤝', label: 'Marketplace',   desc: 'Buy & sell investor-owned deals directly' },
 ]
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-950">
-      {/* Nav */}
-      <nav className="border-b border-slate-800 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center font-black text-slate-950 text-sm">LS</div>
-            <span className="font-bold text-white text-lg">LienScope</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/search" className="text-slate-400 hover:text-white transition-colors text-sm">Search</Link>
-            <Link href="/admin" className="text-slate-400 hover:text-white transition-colors text-sm">Admin</Link>
-            <Link href="/search" className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-sm transition-colors">
-              Search Listings →
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <NavBar />
 
       {/* Hero */}
-      <div className="max-w-7xl mx-auto px-6 py-24 text-center">
+      <div className="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
         <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
           <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
           Updated daily from 500+ county sources
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight tracking-tight">
-          Every Foreclosure.<br />
-          <span className="text-emerald-400">Every Tax Sale.</span><br />
-          One Database.
+        <h1 className="text-5xl md:text-6xl font-black text-white mb-4 leading-tight tracking-tight">
+          Find the Deal.<br />
+          <span className="text-emerald-400">Before Anyone Else.</span>
         </h1>
 
         <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
-          Nationwide coverage of foreclosure auctions, tax lien certificates, and tax deed sales — scraped daily from all US municipalities.
+          The investor command center for foreclosure auctions, tax liens, and tax deed sales.
+          30+ filters. Live data. Deal analyzer. Nationwide.
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <Link href="/search" className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-4 rounded-xl text-lg transition-colors">
-            Search All Listings →
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
+          <Link href="/search" className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-8 py-4 rounded-xl text-lg transition-colors flex items-center gap-2">
+            Search All Listings <ArrowRight size={18} />
           </Link>
-          <Link href="/admin" className="border border-slate-700 hover:border-slate-500 text-white font-semibold px-8 py-4 rounded-xl text-lg transition-colors">
-            Scraper Dashboard
+          <Link href="/signup" className="border border-slate-700 hover:border-slate-500 text-white font-semibold px-8 py-4 rounded-xl text-lg transition-colors">
+            Start Free →
           </Link>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20">
-          {stats.map(stat => (
-            <div key={stat.label} className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-              <div className="text-3xl font-black text-white mb-1">{stat.value}</div>
-              <div className="text-sm font-semibold text-slate-300 mb-1">{stat.label}</div>
-              <div className="text-xs text-emerald-400">{stat.change}</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {stats.map(s => (
+            <div key={s.label} className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+              <div className="text-3xl font-black text-white mb-1">{s.value}</div>
+              <div className="text-sm font-semibold text-slate-300 mb-1">{s.label}</div>
+              <div className="text-xs text-emerald-400">{s.change}</div>
             </div>
           ))}
         </div>
       </div>
 
+      {/* 4 tabs callout */}
+      <div className="max-w-5xl mx-auto px-6 pb-16">
+        <h2 className="text-2xl font-bold text-white text-center mb-6">One Platform. Four Markets.</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {tabs.map(t => (
+            <Link key={t.href} href={t.href}
+              className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-5 text-center group transition-all hover:-translate-y-0.5">
+              <div className="text-3xl mb-2">{t.emoji}</div>
+              <h3 className="text-white font-bold text-base mb-1 group-hover:text-emerald-400 transition-colors">{t.label}</h3>
+              <p className="text-slate-500 text-xs leading-relaxed">{t.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Features */}
-      <div className="max-w-7xl mx-auto px-6 py-16 border-t border-slate-800">
+      <div className="max-w-5xl mx-auto px-6 py-16 border-t border-slate-800">
         <h2 className="text-3xl font-bold text-white text-center mb-12">Built for serious investors</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map(f => (
-            <div key={f.title} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-slate-600 transition-colors">
-              <f.icon size={24} className="text-emerald-400 mb-4" />
-              <h3 className="font-bold text-white text-lg mb-2">{f.title}</h3>
+            <div key={f.title} className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-6 transition-colors">
+              <f.icon size={22} className="text-emerald-400 mb-3" />
+              <h3 className="font-bold text-white text-base mb-2">{f.title}</h3>
               <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800 px-6 py-8 text-center">
-        <p className="text-slate-500 text-sm">© 2026 LienScope. Data sourced from public municipal records.</p>
+      {/* Pricing teaser */}
+      <div className="max-w-5xl mx-auto px-6 pb-16">
+        <div className="bg-gradient-to-r from-slate-900 via-violet-900/20 to-slate-900 border border-slate-800 rounded-3xl p-10 text-center">
+          <h2 className="text-3xl font-black text-white mb-3">Start free. Upgrade when you&apos;re ready.</h2>
+          <p className="text-slate-400 mb-6 max-w-xl mx-auto">
+            Free tier includes 10 searches/day. Pro unlocks all filters, deal analyzer, and saved searches.
+            Elite adds the Marketplace, API, and team seats.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 mb-4">
+            <Link href="/signup" className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-8 py-3 rounded-xl transition-colors">
+              Start Free →
+            </Link>
+            <Link href="/pricing" className="border border-slate-700 hover:border-slate-500 text-slate-300 font-semibold px-8 py-3 rounded-xl transition-colors">
+              View Pricing
+            </Link>
+          </div>
+          <p className="text-slate-600 text-sm">Pro $29/mo · Elite $79/mo · Cancel any time</p>
+        </div>
+      </div>
+
+      <footer className="border-t border-slate-800 px-6 py-8">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 bg-emerald-500 rounded-md flex items-center justify-center font-black text-slate-950 text-xs">LS</div>
+            <span className="font-bold text-white">LienScope</span>
+            <span className="text-slate-600 text-xs ml-2">© 2026</span>
+          </div>
+          <div className="flex items-center gap-6 text-sm text-slate-500">
+            <Link href="/search" className="hover:text-white transition-colors">Search</Link>
+            <Link href="/marketplace" className="hover:text-white transition-colors">Marketplace</Link>
+            <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
+            <Link href="/admin" className="hover:text-white transition-colors">Admin</Link>
+          </div>
+        </div>
       </footer>
     </div>
   )

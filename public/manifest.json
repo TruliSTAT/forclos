@@ -1,0 +1,16 @@
+{
+  "name": "Forclos — Find the Deal",
+  "short_name": "Forclos",
+  "description": "The investor command center for foreclosure auctions, tax liens, and tax deed sales.",
+  "start_url": "/search",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["finance", "business"],
+  "screenshots": []
+}
